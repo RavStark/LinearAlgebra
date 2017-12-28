@@ -1,4 +1,8 @@
 import math
+from decimal import Decimal, getcontext
+
+getcontext().prec=3
+
 class Vector(object):
     def __init__(self, coordinates):
         try:
@@ -29,7 +33,7 @@ class Vector(object):
         coords = [x-y for (x,y) in zip(self.coordinates,v.coordinates)]
         return Vector(coords)
 
-    def __mul__(self, v):
+    def times_scalar(self, v):
         coords = [x * v for x in self.coordinates]
         return Vector(coords)
 
@@ -40,21 +44,18 @@ class Vector(object):
     def normalized(self):
         try:
             coords = self.magnitude()
-            return self * (1/coords)
+            return self.times_scalar(1./coords)
         except ZeroDivisionError:
             raise Exception('Cannot normalize the zero vector')
 
     def dotProduct(self, v):
-        result = [a * b for a,b in zip(self.coordinates,v.coordinates)]
-        return sum(result)
+        return sum([a * b for a,b in zip(self.coordinates,v.coordinates)])
 
     def angle(self, v, in_degrees=False):
         try:
             u1 = self.normalized()
             u2 = v.normalized()
             result = u1.dotProduct(u2)
-            if result > 1.0 and result < 1 + 1e-5:
-                result = 1
             a = math.acos(result)
             print a
             if in_degrees:
@@ -64,8 +65,8 @@ class Vector(object):
         except ZeroDivisionError:
             raise Exception('Cannot find angle with a zero vector')
 
-    def isParallel(self, v):
-        return (self.isZero() or v.isZero() or self.angle(v) == 0 or self.angle(v) == math.pi)
+    def isParallel(self, v, tolerance=1e-7):
+        return (self.isZero() or v.isZero() or abs(self.angle(v)) < tolerance or self.angle(v) == math.pi)
         
 
     def isOrthogonal(self, v, tolerance=1e-10):
@@ -83,4 +84,15 @@ class Vector(object):
         p = self.projOn(v)
         return self - p
     
+    def crossProduct(self, v):
+        if self.dimension != 3 or v.dimension != 3:
+            raise Exception('Dimension uncorrect to produce cross product')
+        coords = []
+        coords.append(self.coordinates[1] * v.coordinates[2] - self.coordinates[2] * v.coordinates[1])
+        coords.append(self.coordinates[2] * v.coordinates[0] - self.coordinates[0] * v.coordinates[2])
+        coords.append(self.coordinates[0] * v.coordinates[1] - self.coordinates[1] * v.coordinates[0])
+        return Vector(coords)
 
+v1 = Vector([8.462,7.893,-8.187])
+v2 = Vector([6.984,-5.975,4.778])
+print v1.crossProduct(v2)
