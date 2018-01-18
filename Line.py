@@ -97,16 +97,4 @@ class MyDecimal(Decimal):
     def is_near_zero(self, eps=1e-10):
         return abs(self) < eps
                 
-lt = Line(Vector([2,2]), 3)
-lt2 = Line(Vector([4,4]), 1)
-
-l1 = Line(Vector([4.046,5.836]), 1.21)
-l2 = Line(Vector([10.115,7.09]), 3.025)
-print l1.isIntersection(l2)
-l3 = Line(Vector([7.204,3.182]), 8.68)
-l4 = Line(Vector([8.172,4.114]), 9.883)
-print l3.isIntersection(l4)
-l5 = Line(Vector([1.182,5.562]), 6.744)
-l6 = Line(Vector([1.773,8.343]), 9.525)
-print l5.isIntersection(l6)
 

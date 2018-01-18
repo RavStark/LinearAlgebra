@@ -55,9 +55,14 @@ class Vector(object):
         try:
             u1 = self.normalized()
             u2 = v.normalized()
+            
             result = u1.dotProduct(u2)
+            #something wrong with python?
+            if result > 1.0:
+                result = 1.0
+            elif result < -1.0:
+                result =-1.0
             a = math.acos(result)
-            print a
             if in_degrees:
                 return a * 180./pi
             else:
@@ -93,6 +98,3 @@ class Vector(object):
         coords.append(self.coordinates[0] * v.coordinates[1] - self.coordinates[1] * v.coordinates[0])
         return Vector(coords)
 
-v1 = Vector([8.462,7.893,-8.187])
-v2 = Vector([6.984,-5.975,4.778])
-print v1.crossProduct(v2)

@@ -11,7 +11,7 @@ class Plane(object):
         self.dimension = 2
 
         if not normal_vector:
-            all_zeros = ['0']*self.dimension
+            all_zeros = [0]*self.dimension
             normal_vector = Vector(all_zeros)
         self.normal_vector = normal_vector
 
@@ -84,32 +84,25 @@ class Plane(object):
         except ZeroDivisionError:
             return None
 
-    def __eq__(self, l):
+    def __eq__(self, p):
 
-        if not self.isParallel(l):
+        if self.normal_vector.isZero():
+            if not p.normal_vector.isZero():
+                return False
+            else:
+                diff = self.constant_term - p.constant_term
+                return MyDecimal(diff).is_near_zero()
+        elif p.normal_vector.isZero():
+            return False
+        if not self.isParallel(p):
             return False
         n1 = self.basepoint
-        n2 = l.basepoint
+        n2 = p.basepoint
         diff = n1 - n2
-        return diff.isOrthogonal(self.basepoint)
+        return diff.isOrthogonal(self.normal_vector)
         
 class MyDecimal(Decimal):
     def is_near_zero(self, eps=1e-10):
         return abs(self) < eps
                 
 
-
-l1 = Plane(Vector([-0.412,3.806,0.728]), -3.46)
-l2 = Plane(Vector([1.03,-9.515,-1.82]), 8.65)
-print l1.isParallel(l2)
-print l1==l2
-
-l3 = Plane(Vector([2.611,5.528,0.283]), 4.6)
-l4 = Plane(Vector([7.715,8.306,5.342]), 3.76)
-print l3.isParallel(l4)
-print l3==l4
-
-l5 = Plane(Vector([-7.926,8.625,-7.212]), -7.952)
-l6 = Plane(Vector([-2.642,2.875,-2.404]), -2.443)
-print l5.isParallel(l6)
-print l5==l6
